@@ -1,0 +1,15 @@
+* {
+    box-sizing: border-box;
+}
+html {
+font-size: 0.8rem;
+height: 100%;
+}
+chip {
+    display: grid;
+    grid-template-columns: 5em 1em 10em 1fr;
+    grid-template-rows: auto;
+}
+img {
+    min-width: 100%;
+}

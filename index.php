@@ -60,11 +60,13 @@ foreach ($buy as $art=>$count) {
 ?>
 </chips>
 <?=$total_lists?>
+<div id="csv"></div>
 </body>
 <script>
 $(document).ready(function(){
     $('chip').each(function(index){
-        $(this).html('<vendor_code>'+$(this).attr('vendor_code')+'</vendor_code><vchip class="'+$(this).attr('vendor_code')+'">&#9632;</vchip><chip_count>'+$(this).attr('chip_count')+'</chip_count><list_count>'+$(this).attr('list_count')+'</list_count>');
+        $(this).html('<vchip class="'+$(this).attr('vendor_code')+'">&#9632;</vchip><vendor_code>'+$(this).attr('vendor_code')+'</vendor_code><list_count>'+$(this).attr('list_count')+'</list_count><chip_count>'+$(this).attr('chip_count')+'</chip_count>');
+        $('#csv').append($(this).attr('vendor_code')+';'+$(this).attr('list_count')+'<br>');
     });
 });    
 </script>

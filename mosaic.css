@@ -10,6 +10,15 @@ chip {
     grid-template-columns: 5em 1em 10em 1fr;
     grid-template-rows: auto;
 }
+palette {
+    display: block;
+}
 img {
     min-width: 100%;
+}
+palette>span {
+    min-width: 5em;
+    border-radius: 0.5em;
+    border: solid 1px black;
+    color: color-contrast(white vs black);
 }

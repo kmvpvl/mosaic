@@ -1,26 +1,54 @@
-var palettes = null;
+var mosaic = null;
+
 function sendDataToServer(api, data, callback) {
 	showLoading();
-	var p = $.post(api + ".php",
-	{
-		//username: $("#username").val(),
-		//password: $("#password").val(),
-		data: data
-	},
-	callback);
-	p.fail(function(data, status) {
-		hideLoading();
-		switch (data.status) {
-			case 401:
-				clearInstance();
-				showLoginForm();
-			default:				
-				showError(api + "<br>Description: " + data.status + ": " + data.statusText + ". " + data.responseText);
+	let p = $.ajax(api + ".php", {
+		method: 'POST',
+		data: {userid: localStorage.getItem('userid'), data: data},
+		processData: true,
+		success: callback,
+		error: function(xhr, textStatus, error) {
+			hideLoading();
+			switch (xhr.status) {
+				case 401:
+					clearInstance();
+					showLoginForm();
+				default:				
+					showError(api + "<br>Description: " + xhr.status + ": " + xhr.statusText + ". " + xhr.responseText);
+			}
 		}
 	});
 }
 
-function recieveDataFromServer(data, status) {
+function sendFileToServer(api, data, callback) {
+	showLoading();
+	let fd = new FormData();
+	fd.append('userid', localStorage.getItem('userid'));
+	for (let [i, v] of Object.entries(data)) {
+//		fd.append(i, v);
+		fd.append('data['+i+']', v);
+	};
+	let p = $.ajax(api + ".php", {
+		method: 'POST',
+		data: fd,
+		processData: false,
+		contentType: false,
+		dataType    : 'json',
+		success: callback,
+		error: function(xhr, textStatus, error) {
+			hideLoading();
+			switch (xhr.status) {
+				case 401:
+					clearInstance();
+					showLoginForm();
+				default:				
+					showError(api + "<br>Description: " + xhr.status + ": " + xhr.statusText + ". " + xhr.responseText);
+			}
+		}
+	});
+}
+
+function recieveDataFromServer(data, status, xhr) {
 	hideLoading();
 	var ls = null;
 	switch (status) {
@@ -64,9 +92,10 @@ class Palette extends EventHandlerPrototype {
 		this.drawElement();
 	}
 	drawElement (){
-		$(this.element).html(this.data.name);
+		$(this.element).html('<input type="radio" name="radioPalette" palette="'+this.data.name+'">'+this.data.name);
 		for (let [k, v] of Object.entries(this.data.colormap)) {
 			$(this.element).append('<span style="background-color:'+v+'">'+k+'</span>');
 		}
 	}
 }
+

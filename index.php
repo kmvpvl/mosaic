@@ -101,7 +101,20 @@ function updateValues(lsdata) {
         }
         $('img[thumb="'+mosaic.currentimage+'"]').addClass('active');
     }
-
+    $('images > img[thumb]').click(function(){
+        if (!$(this).hasClass('active')) {
+            sendDataToServer("apiSetCurrentImage", {currentimage: $(this).attr('thumb')},
+                function(data, status){
+                var ls = recieveDataFromServer(data, status);
+                if (ls && ls.result=='OK') {
+                    updateValues(ls.data);
+                } else {
+                    //debugger;
+                    showError('Could not get pelettes!');
+                }
+            });
+        }
+    });
     // fill all data
     if (curimage) {
         $('#imgRaw').attr('src', 'images/raw/'+curimage.filename+'?v='+Math.random());
@@ -131,19 +144,19 @@ $(document).ready(function(){
             localStorage.setItem('userid', ls.data.id);
             updateValues(ls.data);
             sendDataToServer("apiGetPalettes", undefined,
-            function(data, status){
-            var ls = recieveDataFromServer(data, status);
-            if (ls && ls.result=='OK') {
-                palettes = ls.data;
-                for (let [k, p] of Object.entries(palettes)) {
-                    po = new Palette(p);
-                    $('palettes').append(po.element);
+                function(data, status){
+                var ls = recieveDataFromServer(data, status);
+                if (ls && ls.result=='OK') {
+                    palettes = ls.data;
+                    for (let [k, p] of Object.entries(palettes)) {
+                        po = new Palette(p);
+                        $('palettes').append(po.element);
+                    }
+                } else {
+                    //debugger;
+                    showError('Could not get pelettes!');
                 }
-            } else {
-                //debugger;
-                showError('Could not get pelettes!');
-            }
-        });
+            });
         } else {
             showError('Could not get user information!');
         }

@@ -20,8 +20,6 @@ class Palette implements JsonSerializable {
 }
 class Mosaic implements JsonSerializable {
     protected $palettes = [];
-    protected $jpgimage = null;
-    protected $image = null;
     protected $xml = null;
     protected $userid = null;
     function __construct($_userid)
@@ -117,6 +115,10 @@ class Mosaic implements JsonSerializable {
             case 'username': 
                 $this->xml->name = $value;
             break;
+            case 'currentimage':
+                $this->xml->currentimage = $value;
+                $this->saveXML();
+                break;
             default:
                 throw new MException('Unknown property');
         }
@@ -139,34 +141,7 @@ class Mosaic implements JsonSerializable {
         if (!count($this->palettes)) $this->scan_palettes();
         return $this->palettes;
     }
-    function loadRawImage() {
-        $this->jpgimage = imagecreatefromjpeg('fishes.jpg');
-    }
-    function resizeRawImage(int $new_width, int $new_height){
-        if(!$this->jpgimage) $this->loadRawImage();
-        $this->jpgimage = imagescale($this->jpgimage, 200);
-    }
-    function createBlankImage(int $width, int $height, String $palette_name) {
-        $this->scan_palettes();
-        $this->resizeRawImage($width, $height);
-        $this->image = imagecreate($width, $height);
-        if (!isset($this->palettes[$palette_name])) throw new MException('Palette "'.$palette_name.'" not found');
-        foreach($this->palettes[$palette_name]->colormap as $k=>$v) {
-            $rgb = sscanf($v, "#%02x%02x%02x");
-            imagecolorallocate($this->image, $rgb[2], $rgb[1], $rgb[0]);
-        }
-        for($x = 0; $x < $width; $x++) {
-            for($y = 0; $y < $height; $y++) {
-                $rgb = imagecolorat($this->jpgimage, $x, $y);
-                $r = ($rgb >> 16) & 0xFF;
-                $g = ($rgb >> 8) & 0xFF;
-                $b = $rgb & 0xFF;
-                $c = imagecolorclosest($this->image, $r, $g, $b);
-                imagesetpixel($this->image, $x, $y, $c);
-            }
-        }
-        return $this->image;
-    }
+
     protected function getXML(?string $_userid = null):SimpleXMLElement {
         if ($_userid) {
             $this->xml = simplexml_load_file('users/u-'.$_userid.'.xml');

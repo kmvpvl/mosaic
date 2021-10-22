@@ -56,8 +56,9 @@ require_once('classMosaic.php');
 </step-palette>  
 <step-calculate>
     <img id="imgPaletted">
-    1. Change calc<br>
-    <button id="btnCalculate">Next step...</button>
+    1. Approve the orders parameters<br>
+    <order></order>
+    <button id="btnApprove">Next step...</button>
 <chips></chips>
 </step-calculated>  
 </curstep>
@@ -128,6 +129,16 @@ function updateValues(lsdata) {
             $('input[name="radioPalette"][palette="'+curimage.palette+'"]').prop('checked', true);
             $('#imgPaletted').attr('src', 'images/paletted/'+curimage.pannofilename+'?v='+Math.random());
         }
+        if ('req' in curimage) {
+            $('order').html('');
+            $('order').append('<panno-width>'+curimage.width+'</panno-width>');
+            $('order').append('<panno-height>'+curimage.height+'</panno-height>');
+            let s = '';
+            for (let [k,v] of Object.entries(curimage.req)){
+                s += '<chip color="'+palettes[curimage.palette].colormap[k]+'">'+k+';'+v+'</chip>'
+            }
+            $('order').append('<chips>'+s+'</chips>');
+        }
     }
     $('step[step]').removeClass('active');
     $('step[step]').addClass('disable');
@@ -137,28 +148,28 @@ function updateValues(lsdata) {
     showStep(curstep);
 }
 $(document).ready(function(){
-    sendDataToServer("apiGetMosaic", undefined,
-        function(data, status, xhr){
+    sendDataToServer("apiGetPalettes", undefined,
+        function(data, status){
         var ls = recieveDataFromServer(data, status);
         if (ls && ls.result=='OK') {
-            localStorage.setItem('userid', ls.data.id);
-            updateValues(ls.data);
-            sendDataToServer("apiGetPalettes", undefined,
-                function(data, status){
+            palettes = ls.data;
+            for (let [k, p] of Object.entries(palettes)) {
+                po = new Palette(p);
+                $('palettes').append(po.element);
+            }
+            sendDataToServer("apiGetMosaic", undefined,
+                function(data, status, xhr){
                 var ls = recieveDataFromServer(data, status);
                 if (ls && ls.result=='OK') {
-                    palettes = ls.data;
-                    for (let [k, p] of Object.entries(palettes)) {
-                        po = new Palette(p);
-                        $('palettes').append(po.element);
-                    }
+                    localStorage.setItem('userid', ls.data.id);
+                    updateValues(ls.data);
                 } else {
-                    //debugger;
-                    showError('Could not get pelettes!');
+                    showError('Could not get user information!');
                 }
             });
         } else {
-            showError('Could not get user information!');
+            //debugger;
+            showError('Could not get pelettes!');
         }
     });
 });   

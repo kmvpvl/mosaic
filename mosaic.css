@@ -13,7 +13,7 @@ body {
     grid-template-rows: auto 1fr;
     grid-template-columns: auto 1fr;
     grid-gap: 0.2em;
-  }
+}
 a {
   cursor: pointer;
 }
@@ -28,6 +28,7 @@ loading-wait {
   z-index: 5;
   display: none;
 }
+
 error-message.alert {
   position: absolute;
   margin: 20%;
@@ -79,9 +80,7 @@ step.disable {
     cursor:not-allowed;
 }
 chip {
-    display: grid;
-    grid-template-columns: 5em 1em 10em 1fr;
-    grid-template-rows: auto;
+  display: block;
 }
 palettes {
     display: block;
@@ -96,13 +95,16 @@ palette {
 }
 img[thumb] {
   width: 50px;
-  filter: invert(80%);
+  /*filter: invert(80%);*/
   border-radius: 50px;
+  padding: 5px;
+  margin: 5px;
+  border:white 3px solid;
 }
 img.active {
   border-radius: 1px;
-  filter: invert(1);
-  border:white 3px dotted;
+  /*filter: invert(1);*/
+  border:black 3px dotted;
   padding: 5px;
   margin: 5px;
 }
@@ -110,6 +112,8 @@ images {
   display: grid;
   grid-template-columns: 1fr;
   grid-template-rows: auto;
+  overflow-y:auto;
+  height: 100%;
 }
 palette>span {
     min-width: 5em;

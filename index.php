@@ -36,7 +36,7 @@ require_once('classMosaic.php');
     1. Let us call you by your name. Pls fill your name here <input type="text" id="customerName"><br>
     2. Upload image 
     <input type="file" id="inImage"> <br>or paste link to image
-    <input type="text" id="ulrImage"><br>
+    <input type="hidden" id="ulrImage"><br>
     <button id="btnUploadImage">Next step...</button>
 </step-upload>  
 <step-size>
@@ -169,7 +169,7 @@ $(document).ready(function(){
             });
         } else {
             //debugger;
-            showError('Could not get pelettes!');
+            showError('Could not load palettes!');
         }
     });
 });   
@@ -235,7 +235,6 @@ $('step[step]').click(function() {
 
 function showStep(step_name) {
     $('curstep').children().hide();
-    localStorage.setItem('current_step', 'size');
     $('curstep > step-'+step_name).show();
 }
 

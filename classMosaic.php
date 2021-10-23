@@ -145,8 +145,9 @@ class Mosaic implements JsonSerializable {
     protected function getXML(?string $_userid = null):SimpleXMLElement {
         if ($_userid) {
             $this->xml = simplexml_load_file('users/u-'.$_userid.'.xml');
-        } else {
-            $this->userid = bin2hex(openssl_random_pseudo_bytes(16));
+        } 
+        if ($this->xml === false || is_null($this->xml)) {
+            $this->userid = $_userid?$_userid:bin2hex(openssl_random_pseudo_bytes(16));
             $this->xml = new SimpleXMLElement('<mosaic/>');
             $this->xml->addChild('id', $this->userid);
             $dt = new DateTime();

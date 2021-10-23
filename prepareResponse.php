@@ -11,7 +11,7 @@ function prepareJsonResponseData($callback, $object){
     try {
         $ret["data"] = $callback($object);
         $ret["result"] = "OK";
-    } catch (\Exception $e) {
+    } catch (Exception $e) {
         $ret["result"] = "FAIL";
         $ret["description"] = $e->getMessage();
     }
@@ -22,13 +22,13 @@ function preparePngResponse ($callback, $object) {
     $ret = [];
     try {
         imagepng($callback($object));
-    } catch (\Exception $e) {
+    } catch (Exception $e) {
     }
 }
 
 try {
 	$mosaic = new Mosaic($_POST['userid']);
-} catch (Exception | MException $e) {
+} catch (Throwable | Exception | MException $e) {
 	http_response_code(400);
 	die ($e->getMessage());
 }

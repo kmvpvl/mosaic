@@ -1,0 +1,23 @@
+on: 
+  push: 
+    branches: [main]
+name: 🚀 Deploy new version website on push
+jobs:
+  web-deploy:
+    name: 🎉 Deploy
+    runs-on: ubuntu-latest
+    steps:
+    - name: 🚚 Get latest code
+      uses: actions/checkout@v2.3.2
+    
+    - name: Delete sql files
+      uses: JesseTG/rm@v1.0.2
+      with: 
+        path: ea.sql
+    
+    - name: 📂 Sync files
+      uses: SamKirkland/FTP-Deploy-Action@4.0.0
+      with:
+        server: emotional-azimuth.xyz
+        username: ${{ secrets.FTP_USER }}
+        password: ${{ secrets.FTP_PASSWORD }}

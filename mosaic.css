@@ -1,15 +1,123 @@
 * {
     box-sizing: border-box;
 }
-html {
-font-size: 0.8rem;
-height: 100%;
+body {
+    min-height: 100%;
+    max-height: 100%;
+    min-width: 100%;
+    max-width: 100%;
+    overflow:hidden;
+    width: 100%;
+    height:100%;
+    display: grid;
+    grid-template-rows: auto 1fr;
+    grid-template-columns: auto 1fr;
+    grid-gap: 0.2em;
+}
+a {
+  cursor: pointer;
+}
+
+loading-wait {
+  position: absolute;
+  margin: auto;
+  top: 0;
+  left:0;
+  right:0;
+  bottom:0;
+  z-index: 5;
+  display: none;
+}
+
+error-message.alert {
+  position: absolute;
+  margin: 20%;
+  top: 0;
+  left:0;
+  right:0;
+  bottom:0;
+  display:none;
+  z-index: 10;
+}
+
+instance {
+  display: block;
+  padding: 5px;
+  margin: 0px;
+  width: 100%;
+  min-height: 100%;
+  max-height: 100%;
+  overflow-y:hidden;
+}
+step {
+    min-height: 3em;
+    max-height: 3em;
+    height: 3em;
+    border-radius: 3em;
+    border: black 1px solid;
+    color: black;
+    background-color: white;
+    cursor: pointer;
+}  
+step-* {
+  display: block;
+}
+curstep {
+    display: block;
+    padding: 5px;
+    overflow-y:auto;
+    height: 100%;
+}
+step.active {
+    color: white;
+    background-color: black;;
+    cursor:not-allowed;
+}
+step.disable {
+    background-color: white;
+    color: silver;
+    border-color: silver;
+    cursor:not-allowed;
 }
 chip {
-    display: grid;
-    grid-template-columns: 1em 3em 3em 1fr;
-    grid-template-rows: auto;
+  display: block;
 }
-img {
+palettes {
+    display: block;
+}
+palette {
+    display: block;
+}
+#imgRaw, #imgSized, #imgPaletted {
+    max-width: 100%;
     min-width: 100%;
+    width: 100%;
+}
+img[thumb] {
+  width: 50px;
+  /*filter: invert(80%);*/
+  border-radius: 50px;
+  padding: 5px;
+  margin: 5px;
+  border:white 3px solid;
+}
+img.active {
+  border-radius: 1px;
+  /*filter: invert(1);*/
+  border:black 3px dotted;
+  padding: 5px;
+  margin: 5px;
+}
+images {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: auto;
+  overflow-y:auto;
+  height: 100%;
+}
+palette>span {
+    min-width: 5em;
+    border-radius: 0.5em;
+    border: solid 1px black;
+    color: color-contrast(white vs black);
 }

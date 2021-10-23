@@ -26,6 +26,11 @@ class Mosaic implements JsonSerializable {
     {
         $this->userid = $_userid;
         $this->getXML($_userid);
+        if (!file_exists('users')) mkdir('users', 0755, true);
+        if (!file_exists('images')) mkdir('images', 0755, true);
+        if (!file_exists('images/raw')) mkdir('images/raw', 0755, true);
+        if (!file_exists('images/sized')) mkdir('images/sized', 0755, true);
+        if (!file_exists('images/paletted')) mkdir('images/paletted', 0755, true);
     }
     function newUploadedImage(string $filename, string $tmpfile):void {
         $uname = bin2hex(openssl_random_pseudo_bytes(16));
@@ -159,9 +164,6 @@ class Mosaic implements JsonSerializable {
     protected function saveXML() {
         $dt = new DateTime();
         $this->xml->changed = $dt->format(DateTime::RFC1036);
-        if (!file_exists('users')) {
-            mkdir('users', 0644, true);
-        }
         if (!$this->xml->asXML('users/u-'.$this->userid.'.xml')) throw new MException('Couldn\'t save the information');
     }
 }

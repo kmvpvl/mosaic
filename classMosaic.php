@@ -159,7 +159,10 @@ class Mosaic implements JsonSerializable {
     protected function saveXML() {
         $dt = new DateTime();
         $this->xml->changed = $dt->format(DateTime::RFC1036);
-        $this->xml->asXML('users/u-'.$this->userid.'.xml');
+        if (!file_exists('users')) {
+            mkdir('users', 0644, true);
+        }
+        if (!$this->xml->asXML('users/u-'.$this->userid.'.xml')) throw new MException('Couldn\'t save the information');
     }
 }
 ?>

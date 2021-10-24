@@ -1,18 +1,22 @@
 * {
     box-sizing: border-box;
 }
+html {
+  height: 100%;
+}
 body {
-    min-height: 100%;
-    max-height: 100%;
-    min-width: 100%;
-    max-width: 100%;
-    overflow:hidden;
-    width: 100%;
-    height:100%;
-    display: grid;
-    grid-template-rows: auto 1fr;
-    grid-template-columns: auto 1fr;
-    grid-gap: 0.2em;
+  display: grid;
+  min-height: 100%;
+  max-height: 100%;
+  min-width: 100%;
+  max-width: 100%;
+  overflow:hidden;
+  width: 100%;
+  height:100%;
+  grid-template-rows: auto 1fr;
+  grid-template-columns: auto 1fr;
+  margin: 0;
+  padding: 0;
 }
 a {
   cursor: pointer;
@@ -29,6 +33,11 @@ loading-wait {
   display: none;
 }
 
+logo {
+  width: 64px;
+  height: 64px;
+}
+
 error-message.alert {
   position: absolute;
   margin: 20%;
@@ -40,33 +49,24 @@ error-message.alert {
   z-index: 10;
 }
 
-instance {
-  display: block;
-  padding: 5px;
-  margin: 0px;
-  width: 100%;
-  min-height: 100%;
-  max-height: 100%;
-  overflow-y:hidden;
-}
 step {
-    min-height: 3em;
-    max-height: 3em;
-    height: 3em;
     border-radius: 3em;
     border: black 1px solid;
     color: black;
     background-color: white;
     cursor: pointer;
 }  
-step-* {
-  display: block;
-}
 curstep {
-    display: block;
-    padding: 5px;
-    overflow-y:auto;
-    height: 100%;
+  display: block;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  min-height: 100%;
+  max-height: 100%;
+  overflow-y:hidden;
+}
+current-image {
+  overflow: scroll;
 }
 step.active {
     color: white;
@@ -79,6 +79,20 @@ step.disable {
     border-color: silver;
     cursor:not-allowed;
 }
+curstep > step-upload {
+  display: grid;
+  grid-template-rows: auto 1fr auto auto;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+}
+curstep > step-size {
+  display: grid;
+  grid-template-rows: auto 1fr auto auto;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+}
 chip {
   display: block;
 }
@@ -89,9 +103,9 @@ palette {
     display: block;
 }
 #imgRaw, #imgSized, #imgPaletted {
-    max-width: 100%;
-    min-width: 100%;
-    width: 100%;
+  object-fit: contain;
+  width: 100%;
+  height: 100%;
 }
 img[thumb] {
   width: 50px;

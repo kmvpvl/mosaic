@@ -1,19 +1,14 @@
+<!DOCTYPE html>
 <?php
 require_once('classMosaic.php');
+require_once('multilang.php');
 ?>
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link rel="stylesheet" href="mosaic.css">
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"></head>
-<link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/css/bootstrap4-toggle.min.css" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/js/bootstrap4-toggle.min.js"></script>
-<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script src="scripts/jquery360.js"></script>
 <script src="eventhandler.js"></script>
 <script src="mosaic.js"></script>
 <body>
@@ -21,31 +16,42 @@ require_once('classMosaic.php');
 <!--img src="fishes.jpg"-->
 <logo>Logo</logo>
 <navigation>
-<step class="disable" step="upload">Upload image</step>    
-<step class="disable" step="size">Crop & size</step>    
-<step class="disable" step="palette">Choose palette</step>    
-<step class="disable" step="calculate">$ Calculate</step>    
-<step class="disable" step="order">Order</step>    
-<step class="disable" step="track">Track</step>    
+<step class="disable" step="upload"><?=getSpecString(1)?></step>    
+<step class="disable" step="size"><?=getSpecString(2)?></step>    
+<step class="disable" step="palette"><?=getSpecString(3)?></step>    
+<step class="disable" step="calculate"><?=getSpecString(4)?></step>    
+<step class="disable" step="order"><?=getSpecString(5)?></step>    
+<step class="disable" step="track"><?=getSpecString(6)?></step>    
 </navigation>
 <images>
 
 </images>
 <curstep>
 <step-upload>
+    <instructions>
     1. Let us call you by your name. Pls fill your name here <input type="text" id="customerName"><br>
-    2. Upload image 
-    <input type="file" id="inImage"> <br>or paste link to image
-    <input type="hidden" id="ulrImage"><br>
-    <button id="btnUploadImage">Next step...</button>
+    2. <?=getSpecString(0)?><input type="file" id="inImage">
+    </instructions>
+    <current-image>
+    </current-image>
+    <input-data>
+        <input type="hidden" id="ulrImage"><br>
+        <button id="btnUploadImage">Next step...</button>
+    </input-data>
 </step-upload>  
 <step-size>
-    <img id="imgRaw">
+    <instructions>
     1. Set new width of panno in chips<br>
-    <input type="number" id="pannoWidth"><br>
-    2. Crop the image
-    <button id="btnAdjustSize">Recalc size...</button>
-    <button id="btnPannoSize">Next step...</button>
+        <input type="number" id="pannoWidth"><br>
+        2. Crop the image
+        <button id="btnAdjustSize">Recalc size...</button>
+    </instructions>
+    <current-image>
+        <img id="imgRaw">
+    </current-image>
+    <input-data>
+        <button id="btnPannoSize">Next step...</button>
+    </input-data>
 </step-size>  
 <step-palette>
     <img id="imgSized">

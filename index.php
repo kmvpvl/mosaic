@@ -7,8 +7,10 @@ require_once('multilang.php');
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link rel="stylesheet" href="bootstrap.css">
 <link rel="stylesheet" href="mosaic.css">
 <script src="scripts/jquery360.js"></script>
+<script src="scripts/bootstrap.min.js"></script>
 <script src="eventhandler.js"></script>
 <script src="mosaic.js"></script>
 <body>
@@ -16,12 +18,13 @@ require_once('multilang.php');
 <!--img src="fishes.jpg"-->
 <logo>Logo</logo>
 <navigation>
-<step class="disable" step="upload"><?=getSpecString(1)?></step>    
-<step class="disable" step="size"><?=getSpecString(2)?></step>    
-<step class="disable" step="palette"><?=getSpecString(3)?></step>    
-<step class="disable" step="calculate"><?=getSpecString(4)?></step>    
-<step class="disable" step="order"><?=getSpecString(5)?></step>    
-<step class="disable" step="track"><?=getSpecString(6)?></step>    
+<div><?=getSpecString(7)?></div>
+<step class="disable" step="upload"><tip><?=getSpecString(1)?></tip></step>   
+<step class="disable" step="size"><tip><?=getSpecString(2)?></tip></step>    
+<step class="disable" step="palette"><tip><?=getSpecString(3)?></tip></step>    
+<step class="disable" step="calculate"><tip><?=getSpecString(4)?></tip></step>    
+<step class="disable" step="order"><tip><?=getSpecString(5)?></tip></step>    
+<step class="disable" step="track"><tip><?=getSpecString(6)?></tip></step>    
 </navigation>
 <images>
 
@@ -50,7 +53,7 @@ require_once('multilang.php');
         <img id="imgRaw">
     </current-image>
     <input-data>
-        <button id="btnPannoSize">Next step...</button>
+        <button id="btnPannoSize">&#8594;</button>
     </input-data>
 </step-size>  
 <step-palette>
@@ -100,15 +103,15 @@ function updateValues(lsdata) {
                 if (mosaic.currentimage == v.id) {
                     curimage = v;
                 }
-                $('images').append('<img thumb="'+v.id+'" src="images/raw/'+v.filename+'">');
+                $('images').append('<div thumb="'+v.id+'"><img src="images/raw/'+v.filename+'"></div>');
             }
         } else {
             curimage = mosaic.image;
-            $('images').append('<img thumb="'+mosaic.image.id+'" src="images/raw/'+mosaic.image.filename+'">');
+            $('images').append('<div thumb="'+mosaic.image.id+'"><img src="images/raw/'+mosaic.image.filename+'"></div>');
         }
-        $('img[thumb="'+mosaic.currentimage+'"]').addClass('active');
+        $('div[thumb="'+mosaic.currentimage+'"]').addClass('active');
     }
-    $('images > img[thumb]').click(function(){
+    $('images > div[thumb]').click(function(){
         if (!$(this).hasClass('active')) {
             sendDataToServer("apiSetCurrentImage", {currentimage: $(this).attr('thumb')},
                 function(data, status){

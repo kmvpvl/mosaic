@@ -99,3 +99,14 @@ class Palette extends EventHandlerPrototype {
 	}
 }
 
+class Navigation extends EventHandlerPrototype {
+	element = null;
+	constructor(element) {
+		super();
+		if (!element) throw new Error('Element expected');
+		this.element = element;
+		this.drawElement();
+	}
+	drawElement() {
+	}
+}

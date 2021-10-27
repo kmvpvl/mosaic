@@ -13,6 +13,8 @@ require_once('multilang.php');
 <script src="scripts/bootstrap.min.js"></script>
 <script src="eventhandler.js"></script>
 <script src="mosaic.js"></script>
+<title><?=getSpecString(7)?></title>
+</head>
 <body>
 <loading-wait class="spinner-border"></loading-wait>
 <!--img src="fishes.jpg"-->
@@ -27,41 +29,66 @@ require_once('multilang.php');
 <step class="disable" step="track"><tip><?=getSpecString(6)?></tip></step>    
 </navigation>
 <images>
-
 </images>
 <curstep>
 <step-upload>
     <instructions>
-    1. Let us call you by your name. Pls fill your name here <input type="text" id="customerName"><br>
-    2. <?=getSpecString(0)?><input type="file" id="inImage">
+    <?=getSpecString(0)?>
     </instructions>
     <current-image>
+        <img-frame>
+        <div>        <input type="file" id="inImage"></div>
+    <img id="imgPreview">
+    </img-frame>
     </current-image>
     <input-data>
-        <input type="hidden" id="ulrImage"><br>
-        <button id="btnUploadImage">Next step...</button>
+        <input type="text" id="customerName">
+        <input type="hidden" id="ulrImage">
+        <button id="btnUploadImage">&#8594;</button>
     </input-data>
 </step-upload>  
 <step-size>
     <instructions>
-    1. Set new width of panno in chips<br>
-        <input type="number" id="pannoWidth"><br>
-        2. Crop the image
-        <button id="btnAdjustSize">Recalc size...</button>
+        <div>1. <?=getSpecString(9)?></div>
+        <div>2. <?=getSpecString(8)?>
+        <input type="number" id="pannoWidth">
+        </div>
+        <div>3. <?=getSpecString(10)?><?=getSpecString(11)?><?=getSpecString(12)?></div>
     </instructions>
     <current-image>
-        <img id="imgRaw">
+        <span></span>
+        <div><input type="number" crop="left"></div>
+        <span></span>
+        <div><input type="number" crop="top"></div>
+        <img-frame>
+        <span class="crop-left"></span>
+        <span class="crop-right"></span>
+        <span class="crop-top"></span>
+        <span class="crop-bottom"></span>
+        <img id="imgRaw"></img-frame>
+        <div style="display: flex;flex-direction: column;justify-content: flex-end;"><input type="number" crop="bottom"></div>
+        <span></span>
+        <div style="text-align:right;"><input type="number" crop="right"></div>
+        <span></span>
     </current-image>
     <input-data>
         <button id="btnPannoSize">&#8594;</button>
     </input-data>
 </step-size>  
 <step-palette>
-    <img id="imgSized">
-    1. Choose palette<br>
-    <palettes>
-    </palettes>
-    <button id="btnAttachPalette">Next step...</button>
+<instructions>
+        <div><?=getSpecString(13)?></div>
+        <palettes>
+        </palettes>
+    </instructions>
+    <current-image>
+        <img-frame>
+        <img id="imgSized">
+        </img-frame>
+    </current-image>
+    <input-data>
+        <button id="btnAttachPalette">&#8594;</button>
+    </input-data>
 </step-palette>  
 <step-calculate>
     <img id="imgPaletted">
@@ -89,13 +116,56 @@ function showError(_text) {
 function clearInstance() {
 	$("instance").html("");
 }
+function invalidateValues() {
+    //invalidate values
+    let v;
+    v = parseInt($('#pannoWidth').val());
+    if (isNaN(v) || v < 0) 
+        $('#pannoWidth').addClass('form-control is-invalid');
+    else 
+        $('#pannoWidth').removeClass('form-control is-invalid');
+
+    v = parseInt($('input[crop="left"]').val());
+    if (isNaN(v) || v < 0) 
+        $('input[crop="left"]').addClass('form-control is-invalid');
+    else 
+        $('input[crop="left"]').removeClass('form-control is-invalid');
+
+    v = parseInt($('input[crop="top"]').val());
+    if (isNaN(v) || v < 0) 
+        $('input[crop="top"]').addClass('form-control is-invalid');
+    else 
+        $('input[crop="top"]').removeClass('form-control is-invalid');
+
+    v = parseInt($('input[crop="right"]').val());
+    if (isNaN(v) || v < 0) 
+        $('input[crop="right"]').addClass('form-control is-invalid');
+    else 
+        $('input[crop="right"]').removeClass('form-control is-invalid');
+
+    v = parseInt($('input[crop="bottom"]').val());
+    if (isNaN(v) || v < 0) 
+        $('input[crop="bottom"]').addClass('form-control is-invalid');
+    else 
+        $('input[crop="bottom"]').removeClass('form-control is-invalid');
+
+}
+function resetValues() {
+    $('#customerName').val('');
+    $('#inImage').val('');
+    $('input[crop="left"]').val(0);
+    $('input[crop="top"]').val(0);
+    $('input[crop="right"]').val(0);
+    $('input[crop="bottom"]').val(0);
+}
 function updateValues(lsdata) {
     mosaic = lsdata;
+    resetValues();
     $('#customerName').val(mosaic.name);
     //get current image and fill images list
     let curimage = null;
     let curstep = 'upload';
-    $('images').html('');
+    $('images').html('<div thumb="New" class="active">New</div>');
     if ('image' in mosaic) {
         curstep = 'size';
         if ('length' in mosaic.image) {
@@ -109,10 +179,13 @@ function updateValues(lsdata) {
             curimage = mosaic.image;
             $('images').append('<div thumb="'+mosaic.image.id+'"><img src="images/raw/'+mosaic.image.filename+'"></div>');
         }
+        $('div[thumb]').removeClass('active');
         $('div[thumb="'+mosaic.currentimage+'"]').addClass('active');
     }
     $('images > div[thumb]').click(function(){
         if (!$(this).hasClass('active')) {
+            resetValues();
+            if ($(this).attr('thumb') != 'New')
             sendDataToServer("apiSetCurrentImage", {currentimage: $(this).attr('thumb')},
                 function(data, status){
                 var ls = recieveDataFromServer(data, status);
@@ -122,7 +195,9 @@ function updateValues(lsdata) {
                     //debugger;
                     showError('Could not get pelettes!');
                 }
-            });
+            }); else {
+
+            }
         }
     });
     // fill all data
@@ -132,6 +207,10 @@ function updateValues(lsdata) {
             curstep = 'palette';
             $('#imgSized').attr('src', 'images/sized/'+curimage.filename+'?v='+Math.random());
             $('#pannoWidth').val(curimage.width);
+            $('input[crop="left"]').val(curimage.cropleft);
+            $('input[crop="top"]').val(curimage.croptop);
+            $('input[crop="right"]').val(curimage.cropright);
+            $('input[crop="bottom"]').val(curimage.cropbottom);
         }
         if ('palette' in curimage) {
             curstep = 'calculate';
@@ -144,7 +223,7 @@ function updateValues(lsdata) {
             $('order').append('<panno-height>'+curimage.height+'</panno-height>');
             let s = '';
             for (let [k,v] of Object.entries(curimage.req)){
-                s += '<chip color="'+palettes[curimage.palette].colormap[k]+'">'+k+';'+v+'</chip>'
+                s += '<chip color="'+palettes[curimage.palette].colormap[k]+'"><palette-chip style="background-color:'+palettes[curimage.palette].colormap[k]+'"></palette-chip>'+k+';'+v+'</chip>'
             }
             $('order').append('<chips>'+s+'</chips>');
         }
@@ -154,6 +233,9 @@ function updateValues(lsdata) {
     $('step[step="'+curstep+'"]').removeClass('disable');
     $('step[step="'+curstep+'"]').addClass('active');
     $('step[step="'+curstep+'"]').prevAll().removeClass('disable');
+
+    invalidateValues();
+
     showStep(curstep);
 }
 $(document).ready(function(){
@@ -161,31 +243,66 @@ $(document).ready(function(){
         function(data, status){
         var ls = recieveDataFromServer(data, status);
         if (ls && ls.result=='OK') {
-            palettes = ls.data;
+            palettes = ls.data.palettes;
             for (let [k, p] of Object.entries(palettes)) {
                 po = new Palette(p);
-                $('palettes').append(po.element);
+                let d = $("<div></div>")
+                d.append('<input type="radio" name="radioPalette" palette="'+k+'">'+k);
+                d.append(po.element);
+                $('palettes').append(d);
             }
-            sendDataToServer("apiGetMosaic", undefined,
-                function(data, status, xhr){
-                var ls = recieveDataFromServer(data, status);
-                if (ls && ls.result=='OK') {
-                    localStorage.setItem('userid', ls.data.id);
-                    updateValues(ls.data);
-                } else {
-                    showError('Could not get user information!');
-                }
-            });
+            localStorage.setItem('userid', ls.data.mosaic.id);
+            updateValues(ls.data.mosaic);
         } else {
             //debugger;
             showError('Could not load palettes!');
         }
     });
+    $('input[crop]').change(function(){
+        let xratio = $('#imgRaw').innerWidth()/$('#imgRaw')[0].naturalWidth;
+        let yratio = $('#imgRaw').innerHeight()/$('#imgRaw')[0].naturalHeight;
+        let side = $(this).attr('crop');
+        let x, y, off;
+        switch (side) {
+            case 'left':
+                x = $('input[crop="left"]').val();
+                off = $('#imgRaw').position().left;
+                $('span.crop-left').css({left:(x*xratio+off-$('span.crop-left').outerWidth()/2)})
+                break;
+        
+            case 'right':
+                x = $('input[crop="right"]').val();
+                off = $('#imgRaw').position().left+$('#imgRaw').innerWidth();
+                $('span.crop-right').css({left:(-x*xratio+off-$('span.crop-right').outerWidth()/2)})
+                break;
+        
+            case 'top':
+                y = $('input[crop="top"]').val();
+                off = $('#imgRaw').position().top;
+                $('span.crop-top').css({top:(y*yratio+off-$('span.crop-top').outerHeight()/2)})
+                break;
+
+            case 'bottom':
+                y = $('input[crop="bottom"]').val();
+                off = $('#imgRaw').position().top+$('#imgRaw').innerHeight();
+                $('span.crop-bottom').css({top:(-y*yratio+off-$('span.crop-bottom').outerHeight()/2)})
+                break;
+
+            default:
+                break;
+        }
+        //debugger;
+        invalidateValues();
+    });
 });   
 $('#btnPannoSize').click(function(){
     sendDataToServer("apiSetPannoSize", {
         image: mosaic.currentimage,
-        width: $('#pannoWidth').val()
+        width: $('#pannoWidth').val(),
+        cropleft: $('input[crop="left"]').val(),
+        croptop: $('input[crop="top"]').val(),
+        cropright: $('input[crop="right"]').val(),
+        cropbottom: $('input[crop="bottom"]').val()
     }, function(data, status, xhr){
         var ls = recieveDataFromServer(data, status);
         if (ls && ls.result=='OK') {
@@ -246,6 +363,5 @@ function showStep(step_name) {
     $('curstep').children().hide();
     $('curstep > step-'+step_name).show();
 }
-
 </script>
 </html>

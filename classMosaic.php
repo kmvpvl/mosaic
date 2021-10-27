@@ -61,13 +61,20 @@ class Mosaic implements JsonSerializable {
         return $imagexml;
     }
 
-    function setPannoWidth(string $imageid, int $width, int $cropleft = 0, int $croptright = 0, int $croptop = 0, int $cropbottom = 0): void {
+    function setPannoWidth(string $imageid, int $width, int $cropleft = 0, int $cropright = 0, int $croptop = 0, int $cropbottom = 0): void {
         $imagexml = $this->getImageXML($imageid);
         $jpgimage = imagecreatefromjpeg('images/raw/'.$imagexml->filename);
+        $w = imagesx($jpgimage);
+        $h = imagesy($jpgimage);
+        $jpgimage = imagecrop($jpgimage, ['x'=>$cropleft, 'y'=>$croptop, 'width'=>$w-$cropright-$cropleft, 'height'=>$h-$croptop-$cropbottom]);
         $jpgimage = imagescale($jpgimage, $width, -1, IMG_BICUBIC);
         imagejpeg($jpgimage, 'images/sized/'.$imagexml->filename);
         $imagexml->width = $width;
         $imagexml->height = imagesy($jpgimage);
+        $imagexml->cropleft = $cropleft;
+        $imagexml->cropright = $cropright;
+        $imagexml->croptop = $croptop;
+        $imagexml->cropbottom = $cropbottom;
         $this->saveXML();
     }
 

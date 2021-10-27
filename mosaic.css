@@ -1,3 +1,7 @@
+:root {
+  --trend: olive;
+}
+
 * {
     box-sizing: border-box;
 }
@@ -5,9 +9,7 @@ html {
   height: 100%;
 }
 body {
-  font-family:Arial, Helvetica, sans-serif;
-  font-stretch: ultra-condensed;
-  color: olive;
+  color: var(--trend);
   display: grid;
   min-height: 100%;
   max-height: 100%;
@@ -24,7 +26,9 @@ body {
 a {
   cursor: pointer;
 }
-
+h3 {
+  transform: scale(0.8, 1);
+}
 loading-wait {
   position: absolute;
   margin: auto;
@@ -35,12 +39,26 @@ loading-wait {
   z-index: 5;
   display: none;
 }
-
 logo {
   width: 64px;
   height: 84px;
 }
-
+input[type="number"].is-invalid {
+  display: inline;
+  width:6em;
+}
+input[type="number"] {
+  width:4em;
+}
+img-frame {
+  border: var(--trend) 1px dotted;
+  overflow:hidden;
+  text-align:center;
+  vertical-align:middle;
+  position:relative;
+  margin:10px;
+  padding:10px;
+}
 navigation {
   display: grid;
   position: relative;
@@ -53,6 +71,7 @@ navigation > div {
   font-weight: bold;
   text-align: center;
   font-size: 1.2rem;
+  transform: scale(0.8, 1);
 }
 navigation::before {
   position: absolute;
@@ -73,29 +92,22 @@ navigation > step {
   word-break: break-all;
   border-bottom-left-radius: 2em;
   border-bottom-right-radius: 2em;
-  border-top-left-radius: 1em;
-  border-top-right-radius: 1em;
-  color: olive;
+  border-top-left-radius: 0.5em;
+  border-top-right-radius: 0.5em;
+  color: var(--trend);
   background-color: white;
   cursor: pointer;
   font-stretch:50%;
-  letter-spacing: -0.1em;
+  transform: scale(0.8, 1);
 }
-navigation > step:not([class="disable"])::before {
-  content: '';
-  position: absolute;
-  border-top-left-radius: 1em;
-  border-top-right-radius: 1em;
-  border-bottom-left-radius: 2em;
-  border-bottom-right-radius: 2em;
-  border: olive 2px solid;
-  width: 100%;
-  height: 100%;
+navigation > step:not([class="disable"]) {
+  border: var(--trend) 1px solid;
+  box-shadow:0 0 0 1px var(--trend);
 }
 step.active {
   color: white;
-  background-color: olivedrab;
-  border: darkolivegreen 1px solid;
+  background-color: var(--trend);
+  border: var(--trend) 1px solid;
   cursor:not-allowed;
 }
 step.disable {
@@ -109,11 +121,10 @@ navigation > arrow {
   text-align: center;
   color: silver;
 }
-@media only screen and (max-width:600px) {
-  navigation > step > tip {
-    font-size: 11px;
-    transform: rotate(270deg);
-  }
+img-frame {
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
 }
 
 error-message.alert {
@@ -128,16 +139,17 @@ error-message.alert {
 }
 input-data {
   text-align: center;
+  padding: 2px;
 }
-#btnPannoSize {
+#btnUploadImage, #btnPannoSize, #btnAttachPalette {
   position: relative;
   border-radius: 1em;
   width: 6em;
-  color: olive;
+  color: var(--trend);
   background-color: white;
-  border:olive 1px solid;
+  border:var(--trend) 1px solid;
 }
-#btnPannoSize::after {
+#btnUploadImage::after,#btnPannoSize::after, #btnAttachPalette::after {
   position: absolute;
   content: '';
   display: block;
@@ -145,8 +157,8 @@ input-data {
   left:0.5em;
   width:5em;
   height: 60%;
-  border-top: olive 1px solid;
-  border-bottom: olive 1px solid;
+  border-top: var(--trend) 1px solid;
+  border-bottom: var(--trend) 1px solid;
   animation: next-button 10s infinite;
 }
 @keyframes next-button {
@@ -158,6 +170,10 @@ input-data {
   }
 }
 
+instructions {
+  font-style: normal;
+}
+
 curstep {
   display: block;
   padding: 2px;
@@ -166,17 +182,24 @@ curstep {
   min-height: 100%;
   max-height: 100%;
   overflow-y:hidden;
-  border: olive 2px solid;
+  border: var(--trend) 2px solid;
 }
 current-image {
-  overflow: scroll;
+  overflow: hidden;
 }
-curstep > step-upload {
+curstep > step-upload, curstep > step-palette {
   display: grid;
-  grid-template-rows: auto 1fr auto auto;
+  grid-template-rows: auto 1fr auto ;
   padding: 0;
   height: 100%;
   width: 100%;
+}
+curstep > step-palette > instructions {
+  overflow: hidden;
+}
+curstep > step-upload > current-image, curstep > step-palette > current-image {
+  display: grid;
+  grid-template-rows: 1fr;
 }
 curstep > step-size {
   display: grid;
@@ -185,19 +208,42 @@ curstep > step-size {
   height: 100%;
   width: 100%;
 }
+curstep > step-size > current-image{
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  grid-template-rows: auto 1fr auto;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+}
+
 chip {
   display: block;
 }
 palettes {
-    display: block;
+    display: flex;
+    flex-direction: row;
+}
+palettes > div {
+  margin: 5px;
 }
 palette {
-    display: block;
+    display: flex;
+    flex-wrap: wrap;
+    padding: 10px;
+    border: var(--trend) 1px solid;
 }
-#imgRaw, #imgSized, #imgPaletted {
-  object-fit: contain;
-  width: 100%;
-  height: 100%;
+palette-chip {
+  width:10px;
+  height: 10px;
+  display: block;
+}
+#imgPreview, #imgRaw, #imgSized, #imgPaletted {
+  max-width: 100%;
+  max-height: 100%;
+/*  width: 100%;
+  height: 100%;*/
+  vertical-align: middle;
 }
 div[thumb] {
   position: relative;
@@ -214,11 +260,88 @@ div[thumb] > img {
   top:1px;
   left:1px;
 }
+span.crop-left {
+  position: absolute;
+  width: 10px;
+  height:100%;
+  border-top: red 5px solid;
+  border-left: transparent 5px solid;
+  border-right: transparent 5px solid;
+  top:0px;
+  display: flex;
+}
+span.crop-left::before {
+  position: absolute;
+  content: '';
+  width: 1px;
+  height:100%;
+  background-color: red;
+}
+
+span.crop-right {
+  position: absolute;
+  width: 10px;
+  height:100%;
+  border-bottom: red 5px solid;
+  border-left: transparent 5px solid;
+  border-right: transparent 5px solid;
+  right:10px;
+  bottom:0;
+  display: flex;
+}
+span.crop-right::before {
+  position: absolute;
+  content: '';
+  width: 1px;
+  height:100%;
+  background-color: red;
+}
+
+span.crop-top {
+  position: absolute;
+  width: 100%;
+  height:10px;
+  border-left: red 5px solid;
+  border-top: transparent 5px solid;
+  border-bottom: transparent 5px solid;
+  left:0px;
+  display: flex;
+}
+span.crop-top::before {
+  position: absolute;
+  content: '';
+  height: 1px;
+  width:100%;
+  background-color: red;
+  left:0;
+}
+
+span.crop-bottom {
+  position: absolute;
+  width: 100%;
+  height:10px;
+  border-right: red 5px solid;
+  border-top: transparent 5px solid;
+  border-bottom: transparent 5px solid;
+  bottom:10px;
+  left:0px;
+  display: flex;
+}
+
+span.crop-bottom::before {
+  position: absolute;
+  content: '';
+  height: 1px;
+  width:100%;
+  background-color: red;
+  left:0;
+}
+
 div[thumb].active {
   position: relative;
   border-radius: 0px;
   filter: none;
-  border: olive 2px solid;
+  border: var(--trend) 2px solid;
   padding: 5px;
 }
 div[thumb].active::after {
@@ -243,4 +366,17 @@ palette>span {
     border-radius: 0.5em;
     border: solid 1px black;
     color: color-contrast(white vs black);
+}
+@media only screen and (max-width:667px) {
+  html {
+    font-size: 0.8em;
+  }
+  navigation > step > tip {
+    font-size: 11px;
+    transform: rotate(270deg) scale(0.8, 1);
+  }
+  palette-chip {
+    width:5px;
+    height:5px !important;
+  }
 }

@@ -1,23 +1,34 @@
+:root {
+  --trend: olive;
+}
+
 * {
     box-sizing: border-box;
 }
+html {
+  height: 100%;
+}
 body {
-    min-height: 100%;
-    max-height: 100%;
-    min-width: 100%;
-    max-width: 100%;
-    overflow:hidden;
-    width: 100%;
-    height:100%;
-    display: grid;
-    grid-template-rows: auto 1fr;
-    grid-template-columns: auto 1fr;
-    grid-gap: 0.2em;
+  color: var(--trend);
+  display: grid;
+  min-height: 100%;
+  max-height: 100%;
+  min-width: 100%;
+  max-width: 100%;
+  overflow:hidden;
+  width: 100%;
+  height:100%;
+  grid-template-rows: auto 1fr;
+  grid-template-columns: auto 1fr;
+  margin: 0;
+  padding: 2px;
 }
 a {
   cursor: pointer;
 }
-
+h3 {
+  transform: scale(0.8, 1);
+}
 loading-wait {
   position: absolute;
   margin: auto;
@@ -27,6 +38,93 @@ loading-wait {
   bottom:0;
   z-index: 5;
   display: none;
+}
+logo {
+  width: 64px;
+  height: 84px;
+}
+input[type="number"].is-invalid {
+  display: inline;
+  width:6em;
+}
+input[type="number"] {
+  width:4em;
+}
+img-frame {
+  border: var(--trend) 1px dotted;
+  overflow:hidden;
+  text-align:center;
+  vertical-align:middle;
+  position:relative;
+  margin:10px;
+  padding:10px;
+}
+navigation {
+  display: grid;
+  position: relative;
+  grid-template-rows: auto 1fr;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+  font-size: 2vw;
+}
+navigation > div {
+  grid-column: 1 / span 6;
+  font-weight: bold;
+  text-align: center;
+  font-size: 1.2rem;
+  transform: scale(0.8, 1);
+}
+navigation::before {
+  position: absolute;
+  content: '';
+  top:67%;
+  width:100%;
+  border-top: silver 2px dotted;
+}
+
+navigation > step {
+  margin: 5px;
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  word-break: break-all;
+  border-bottom-left-radius: 2em;
+  border-bottom-right-radius: 2em;
+  border-top-left-radius: 0.5em;
+  border-top-right-radius: 0.5em;
+  color: var(--trend);
+  background-color: white;
+  cursor: pointer;
+  font-stretch:50%;
+  transform: scale(0.8, 1);
+}
+navigation > step:not([class="disable"]) {
+  border: var(--trend) 1px solid;
+  box-shadow:0 0 0 1px var(--trend);
+}
+step.active {
+  color: white;
+  background-color: var(--trend);
+  border: var(--trend) 1px solid;
+  cursor:not-allowed;
+}
+step.disable {
+  background-color: white;
+  color: silver;
+  cursor:not-allowed;
+  border: silver 1px solid;
+}
+navigation > arrow {
+  overflow: hidden;
+  text-align: center;
+  color: silver;
+}
+img-frame {
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
 }
 
 error-message.alert {
@@ -39,79 +137,238 @@ error-message.alert {
   display:none;
   z-index: 10;
 }
-
-instance {
+input-data {
+  text-align: center;
+  padding: 2px;
+  overflow: hidden;
+}
+#btnUploadImage, #btnPannoSize, #btnAttachPalette {
+  position: relative;
+  border-radius: 1em;
+  width: 6em;
+  color: var(--trend);
+  background-color: white;
+  border:var(--trend) 1px solid;
+}
+#btnUploadImage::after,#btnPannoSize::after, #btnAttachPalette::after {
+  position: absolute;
+  content: '';
   display: block;
-  padding: 5px;
-  margin: 0px;
+  top:20%;
+  left:0.5em;
+  width:5em;
+  height: 60%;
+  border-top: var(--trend) 1px solid;
+  border-bottom: var(--trend) 1px solid;
+  animation: next-button 10s infinite;
+}
+@keyframes next-button {
+  from, to, 45%, 55% {
+    width: 0em;
+  }
+  50% {
+    width: 5em;
+  }
+}
+
+instructions {
+  font-style: normal;
+}
+
+curstep {
+  display: block;
+  padding: 2px;
+  height: 100%;
   width: 100%;
   min-height: 100%;
   max-height: 100%;
   overflow-y:hidden;
+  border: var(--trend) 2px solid;
 }
-step {
-    min-height: 3em;
-    max-height: 3em;
-    height: 3em;
-    border-radius: 3em;
-    border: black 1px solid;
-    color: black;
-    background-color: white;
-    cursor: pointer;
-}  
-step-* {
+current-image {
+  overflow: hidden;
+}
+curstep > step-upload, curstep > step-palette {
+  display: grid;
+  grid-template-rows: auto 1fr auto ;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+}
+curstep > step-palette > instructions {
+  overflow: hidden;
+}
+curstep > step-upload > current-image, curstep > step-palette > current-image, curstep > step-calculate > current-image {
+  display: grid;
+  grid-template-rows: 1fr;
+  min-height: 30vh;
+}
+curstep > step-size, curstep > step-calculate {
+  display: grid;
+  grid-template-rows: auto 1fr auto auto;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+}
+curstep > step-size > current-image{
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  grid-template-rows: auto 1fr auto;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+}
+chips {
+  overflow-y: scroll;
   display: block;
-}
-curstep {
-    display: block;
-    padding: 5px;
-    overflow-y:auto;
-    height: 100%;
-}
-step.active {
-    color: white;
-    background-color: black;;
-    cursor:not-allowed;
-}
-step.disable {
-    background-color: white;
-    color: silver;
-    border-color: silver;
-    cursor:not-allowed;
+  max-height: 100%;
 }
 chip {
-  display: block;
+  display: flex;
 }
 palettes {
-    display: block;
+    display: flex;
+    flex-direction: row;
+}
+palettes > div {
+  margin: 5px;
 }
 palette {
-    display: block;
+    display: flex;
+    flex-wrap: wrap;
+    padding: 10px;
+    border: var(--trend) 1px solid;
 }
-#imgRaw, #imgSized, #imgPaletted {
-    max-width: 100%;
-    min-width: 100%;
-    width: 100%;
+palette-chip {
+  width:10px;
+  height: 10px;
+  display: block;
 }
-img[thumb] {
-  width: 50px;
-  /*filter: invert(80%);*/
+order {
+  max-height: 100%;
+  display: grid;
+  grid-template-rows: auto auto 1fr;
+}
+#imgPreview, #imgRaw, #imgSized, #imgPaletted {
+  max-width: 100%;
+  max-height: 100%;
+/*  width: 100%;
+  height: 100%;*/
+  vertical-align: middle;
+}
+div[thumb] {
+  position: relative;
+  filter:grayscale();
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+}
+div[thumb] > img {
   border-radius: 50px;
-  padding: 5px;
-  margin: 5px;
-  border:white 3px solid;
+  width: 58px;
+  height: 58px;
+  position: absolute;
+  top:1px;
+  left:1px;
 }
-img.active {
-  border-radius: 1px;
-  /*filter: invert(1);*/
-  border:black 3px dotted;
+span.crop-left {
+  position: absolute;
+  width: 10px;
+  height:100%;
+  border-top: red 5px solid;
+  border-left: transparent 5px solid;
+  border-right: transparent 5px solid;
+  top:0px;
+  display: flex;
+}
+span.crop-left::before {
+  position: absolute;
+  content: '';
+  width: 1px;
+  height:100%;
+  background-color: red;
+}
+
+span.crop-right {
+  position: absolute;
+  width: 10px;
+  height:100%;
+  border-bottom: red 5px solid;
+  border-left: transparent 5px solid;
+  border-right: transparent 5px solid;
+  right:10px;
+  bottom:0;
+  display: flex;
+}
+span.crop-right::before {
+  position: absolute;
+  content: '';
+  width: 1px;
+  height:100%;
+  background-color: red;
+}
+
+span.crop-top {
+  position: absolute;
+  width: 100%;
+  height:10px;
+  border-left: red 5px solid;
+  border-top: transparent 5px solid;
+  border-bottom: transparent 5px solid;
+  left:0px;
+  display: flex;
+}
+span.crop-top::before {
+  position: absolute;
+  content: '';
+  height: 1px;
+  width:100%;
+  background-color: red;
+  left:0;
+}
+
+span.crop-bottom {
+  position: absolute;
+  width: 100%;
+  height:10px;
+  border-right: red 5px solid;
+  border-top: transparent 5px solid;
+  border-bottom: transparent 5px solid;
+  bottom:10px;
+  left:0px;
+  display: flex;
+}
+
+span.crop-bottom::before {
+  position: absolute;
+  content: '';
+  height: 1px;
+  width:100%;
+  background-color: red;
+  left:0;
+}
+
+div[thumb].active {
+  position: relative;
+  border-radius: 0px;
+  filter: none;
+  border: var(--trend) 2px solid;
   padding: 5px;
-  margin: 5px;
+}
+div[thumb].active::after {
+  display: block;
+  position: absolute;
+  content: '';
+  width: 4px;
+  height: 60px;
+  top:0px;
+  left:60px;
+  background-color: white;
 }
 images {
   display: grid;
   grid-template-columns: 1fr;
-  grid-template-rows: auto;
+  grid-template-rows: 64px;
   overflow-y:auto;
   height: 100%;
 }
@@ -120,4 +377,17 @@ palette>span {
     border-radius: 0.5em;
     border: solid 1px black;
     color: color-contrast(white vs black);
+}
+@media only screen and (max-width:667px) {
+  html {
+    font-size: 0.8em;
+  }
+  navigation > step > tip {
+    font-size: 11px;
+    transform: rotate(270deg) scale(0.8, 1);
+  }
+  palette-chip {
+    width:5px;
+    height:5px !important;
+  }
 }

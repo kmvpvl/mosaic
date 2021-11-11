@@ -92,10 +92,21 @@ class Palette extends EventHandlerPrototype {
 		this.drawElement();
 	}
 	drawElement (){
-		$(this.element).html('<input type="radio" name="radioPalette" palette="'+this.data.name+'">'+this.data.name);
+		$(this.element).html('');
 		for (let [k, v] of Object.entries(this.data.colormap)) {
-			$(this.element).append('<span style="background-color:'+v+'">'+k+'</span>');
+			$(this.element).append('<palette-chip style="background-color:'+v+'">'/*+k*/+'</palette-chip>');
 		}
 	}
 }
 
+class Navigation extends EventHandlerPrototype {
+	element = null;
+	constructor(element) {
+		super();
+		if (!element) throw new Error('Element expected');
+		this.element = element;
+		this.drawElement();
+	}
+	drawElement() {
+	}
+}

@@ -110,7 +110,9 @@ class Mosaic implements JsonSerializable {
             $imagexml->req->$kreq = $vreq;
         }
         $bname = pathinfo($imagexml->filename, PATHINFO_FILENAME);
-        $imagexml->palette = $palette;
+        $imagexml->palette = "";
+        $imagexml->palette->name = $palette;
+        $imagexml->palette->excludes = "";
         $imagexml->pannofilename = $bname.'.png';
         imagepng($pngimage, 'images/paletted/'.$imagexml->pannofilename);
         $this->saveXML();

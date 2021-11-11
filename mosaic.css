@@ -140,6 +140,7 @@ error-message.alert {
 input-data {
   text-align: center;
   padding: 2px;
+  overflow: hidden;
 }
 #btnUploadImage, #btnPannoSize, #btnAttachPalette {
   position: relative;
@@ -197,11 +198,12 @@ curstep > step-upload, curstep > step-palette {
 curstep > step-palette > instructions {
   overflow: hidden;
 }
-curstep > step-upload > current-image, curstep > step-palette > current-image {
+curstep > step-upload > current-image, curstep > step-palette > current-image, curstep > step-calculate > current-image {
   display: grid;
   grid-template-rows: 1fr;
+  min-height: 30vh;
 }
-curstep > step-size {
+curstep > step-size, curstep > step-calculate {
   display: grid;
   grid-template-rows: auto 1fr auto auto;
   padding: 0;
@@ -216,9 +218,13 @@ curstep > step-size > current-image{
   height: 100%;
   width: 100%;
 }
-
-chip {
+chips {
+  overflow-y: scroll;
   display: block;
+  max-height: 100%;
+}
+chip {
+  display: flex;
 }
 palettes {
     display: flex;
@@ -237,6 +243,11 @@ palette-chip {
   width:10px;
   height: 10px;
   display: block;
+}
+order {
+  max-height: 100%;
+  display: grid;
+  grid-template-rows: auto auto 1fr;
 }
 #imgPreview, #imgRaw, #imgSized, #imgPaletted {
   max-width: 100%;

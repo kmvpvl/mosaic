@@ -91,11 +91,18 @@ require_once('multilang.php');
     </input-data>
 </step-palette>  
 <step-calculate>
-    <img id="imgPaletted">
+    <instructions>
     1. Approve the orders parameters<br>
-    <order></order>
+    </instructions>
+    <current-image>
+        <img-frame>
+        <img id="imgPaletted">
+        </img-frame>
+    </current-image>
+    <input-data>
+        <order></order>
+    </input-data>
     <button id="btnApprove">Next step...</button>
-<chips></chips>
 </step-calculated>  
 </curstep>
 </body>
@@ -157,6 +164,7 @@ function resetValues() {
     $('input[crop="top"]').val(0);
     $('input[crop="right"]').val(0);
     $('input[crop="bottom"]').val(0);
+    cropToolPositioning();
 }
 function updateValues(lsdata) {
     mosaic = lsdata;
@@ -205,16 +213,17 @@ function updateValues(lsdata) {
         $('#imgRaw').attr('src', 'images/raw/'+curimage.filename+'?v='+Math.random());
         if ('height' in curimage) {
             curstep = 'palette';
-            $('#imgSized').attr('src', 'images/sized/'+curimage.filename+'?v='+Math.random());
+            $('step-palette > current-image > img-frame').css('background-image', "url('images/sized/"+curimage.filename+'?v='+Math.random()+"')");
             $('#pannoWidth').val(curimage.width);
             $('input[crop="left"]').val(curimage.cropleft);
             $('input[crop="top"]').val(curimage.croptop);
             $('input[crop="right"]').val(curimage.cropright);
             $('input[crop="bottom"]').val(curimage.cropbottom);
+            cropToolPositioning();
         }
         if ('palette' in curimage) {
             curstep = 'calculate';
-            $('input[name="radioPalette"][palette="'+curimage.palette+'"]').prop('checked', true);
+            $('input[name="radioPalette"][palette="'+curimage.palette.name+'"]').prop('checked', true);
             $('#imgPaletted').attr('src', 'images/paletted/'+curimage.pannofilename+'?v='+Math.random());
         }
         if ('req' in curimage) {
@@ -223,7 +232,7 @@ function updateValues(lsdata) {
             $('order').append('<panno-height>'+curimage.height+'</panno-height>');
             let s = '';
             for (let [k,v] of Object.entries(curimage.req)){
-                s += '<chip color="'+palettes[curimage.palette].colormap[k]+'"><palette-chip style="background-color:'+palettes[curimage.palette].colormap[k]+'"></palette-chip>'+k+';'+v+'</chip>'
+                s += '<chip color="'+palettes[curimage.palette.name].colormap[k]+'"><palette-chip style="background-color:'+palettes[curimage.palette.name].colormap[k]+'"></palette-chip>'+k+';'+v+'<br></chip>'
             }
             $('order').append('<chips>'+s+'</chips>');
         }
@@ -294,6 +303,7 @@ $(document).ready(function(){
         //debugger;
         invalidateValues();
     });
+    $(window).resize();
 });   
 $('#btnPannoSize').click(function(){
     sendDataToServer("apiSetPannoSize", {
@@ -363,5 +373,14 @@ function showStep(step_name) {
     $('curstep').children().hide();
     $('curstep > step-'+step_name).show();
 }
+function cropToolPositioning() {
+    $('input[crop="left"]').change();    
+    $('input[crop="top"]').change();    
+    $('input[crop="right"]').change();    
+    $('input[crop="bottom"]').change();    
+}
+$(window).resize(function(){
+    cropToolPositioning();
+});
 </script>
 </html>

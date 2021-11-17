@@ -11,7 +11,7 @@ function prepareJsonResponseData($callback, $object){
     try {
         $ret["data"] = $callback($object);
         $ret["result"] = "OK";
-    } catch (Exception $e) {
+    } catch (Throwable | Exception | MException $e) {
         $ret["result"] = "FAIL";
         $ret["description"] = $e->getMessage();
     }

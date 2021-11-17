@@ -47,7 +47,7 @@ class Mosaic implements JsonSerializable {
         $c->filename = $uname.'.'.$ext;
         $this->saveXML();
     }
-    protected function getImageXML(string $imageid): SimpleXMLElement {
+    public function getImageXML(string $imageid): SimpleXMLElement {
         if(count($this->xml->image)>1) {
             foreach($this->xml->image as $im) {
                 if ($im->id == $imageid) {
@@ -88,7 +88,7 @@ class Mosaic implements JsonSerializable {
         if (!isset($this->palettes[$palette])) throw new MException('Palette "'.$palette.'" not found');
         foreach($this->palettes[$palette]->colormap as $k=>$v) {
             $rgb = sscanf($v, "#%02x%02x%02x");
-            imagecolorallocate($pngimage, $rgb[2], $rgb[1], $rgb[0]);
+            imagecolorallocate($pngimage, $rgb[0], $rgb[1], $rgb[2]);
         }
         for($x = 0; $x < $imagexml->width; $x++) {
             for($y = 0; $y < $imagexml->height; $y++) {
@@ -99,7 +99,7 @@ class Mosaic implements JsonSerializable {
                 $c = imagecolorclosest($pngimage, $r, $g, $b);
                 imagesetpixel($pngimage, $x, $y, $c);
                 $crgb = imagecolorsforindex($pngimage, $c);
-                $pkey = array_search(sprintf('#%02x%02x%02x', $crgb['blue'], $crgb['green'], $crgb['red']), $this->palettes[$palette]->colormap);
+                $pkey = array_search(sprintf('#%02x%02x%02x', $crgb['red'], $crgb['green'], $crgb['blue']), $this->palettes[$palette]->colormap);
                 if (!array_key_exists($pkey, $req)) $req[$pkey] = 0;
                 $req[$pkey]++;
             }
@@ -174,6 +174,46 @@ class Mosaic implements JsonSerializable {
         $dt = new DateTime();
         $this->xml->changed = $dt->format(DateTime::RFC1036);
         if (!$this->xml->asXML('users/u-'.$this->userid.'.xml')) throw new MException('Couldn\'t save the information');
+    }
+
+    function getFragment(string $image, int $x, int $y):array {
+        $imagexml = $this->getImageXML($image);
+        if (is_null($imagexml)) throw new MException("Image id ".$image." was not found!");
+        if (!$imagexml->req) throw new MException('Order is not approved');
+        $im = imagecreatefrompng('images/paletted/'.$imagexml->pannofilename);
+        $w = imagesx($im);
+        $h = imagesy($im);
+        $ret = ['panno'=>[], 'brief'=>[]];
+        $this->getPalettes();
+        for ($i = 0; $i < 20; $i++) {
+            $ret['panno'][$i] = [];
+            for ($j = 0; $j < 20; $j++) {
+                $xl = ($x-1) * 20 + $i;
+                $yl = ($y-1) * 20 + $j;
+                if ($xl >= $w || $yl >= $h || $xl <0 || $yl < 0) break;
+                $c = imagecolorat($im, $xl, $yl);
+                $crgb = imagecolorsforindex($im, $c);
+                $pkey = array_search(sprintf('#%02x%02x%02x', $crgb['red'], $crgb['green'], $crgb['blue']), $this->palettes[(string)$imagexml->palette->name]->colormap);
+                $ret['panno'][$i][$j] = ['a'=>$pkey, 'c'=>$this->palettes[(string)$imagexml->palette->name]->colormap[$pkey]];
+                if (!isset($ret['brief'][$pkey])) $ret['brief'][$pkey] = 0;
+                $ret['brief'][$pkey]++;
+            }
+        }
+        //arsort($ret['brief']);
+//        $pngimage = imagecreate($w, $h);
+//        foreach($this->palettes[(string)$imagexml->palette->name]->colormap as $k=>$v) {
+//            $rgb = sscanf($v, "#%02x%02x%02x");
+//            imagecolorallocate($pngimage, $rgb[0], $rgb[1], $rgb[2]);
+//        }
+//        for($x = 0; $x < $imagexml->width; $x++) {
+//            for($y = 0; $y < $imagexml->height; $y++) {
+//                $c = imagecolorat($im, $x, $y);
+//                imagesetpixel($pngimage, $x, $y, $c);
+//            }
+//        }
+//        imagepng($pngimage, 'images/paletted/1.png');
+
+        return $ret;
     }
 }
 ?>
